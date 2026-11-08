@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14110e">
+<title>Akela Nahi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Mukta:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/static/style.css">
+<style>
+  /* The parent's screen: always dark (it stays on all day), very large type, few things at once. */
+  :root { --e-bg: #14110e; --e-panel: #221d18; --e-line: #3a322a; --e-ink: #f6efe5; --e-muted: #b3a797;
+          --e-green: #2f8a57; --e-red: #c8392d; --e-accent: #d9774a; color-scheme: dark; }
+  html, body { height: 100%; }
+  body { background: var(--e-bg); color: var(--e-ink); font-size: 20px; }
+  .app { max-width: 520px; margin: 0 auto; min-height: 100%; display: flex; flex-direction: column;
+         padding: calc(20px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom)); }
+  .top { display: flex; align-items: center; justify-content: space-between; font-size: 1rem; color: var(--e-muted); min-height: 28px; }
+  .top .brand { font-family: var(--serif); color: var(--e-ink); font-size: 1.1rem; }
+  .center { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 24px 0; }
+
+  .clock { font-family: var(--serif); font-size: clamp(4.5rem, 24vw, 7rem); font-weight: 400; line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .date { font-size: 1.3rem; color: var(--e-muted); margin-top: 10px; }
+  .greet { font-family: var(--serif); font-size: 2rem; margin-top: 40px; line-height: 1.2; }
+  .sub { font-size: 1.15rem; color: var(--e-muted); margin-top: 8px; line-height: 1.4; }
+  .big { font-size: 1.45rem; line-height: 1.45; }
+
+  .actions { display: grid; gap: 14px; }
+  .actions.two { grid-template-columns: 1fr 1fr; }
+  .bigbtn { font: inherit; font-size: 1.45rem; font-weight: 600; border: 0; border-radius: 22px; min-height: 84px; padding: 16px;
+            color: #fff; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px;
+            transition: transform .08s, filter .15s; -webkit-tap-highlight-color: transparent; }
+  .bigbtn:active { transform: scale(.98); filter: brightness(.92); }
+  .bigbtn svg { width: 30px; height: 30px; stroke-width: 2.2; }
+  .bigbtn:disabled { opacity: .45; }
+  .bigbtn.green { background: var(--e-green); }
+  .bigbtn.red { background: var(--e-red); }
+  .bigbtn.grey { background: var(--e-panel); color: var(--e-ink); border: 1px solid var(--e-line); }
+  .bigbtn.light { background: var(--e-ink); color: var(--e-bg); }
+  .bigbtn.tall { min-height: 120px; flex-direction: column; gap: 6px; font-size: 1.3rem; }
+  .bigbtn.tall svg { width: 36px; height: 36px; }
+
+  /* incoming call */
+  .caller { position: relative; width: 140px; height: 140px; margin: 0 auto 28px; }
+  .caller .disc { position: absolute; inset: 0; border-radius: 50%; background: var(--e-accent); display: grid; place-items: center;
+                  font-family: var(--serif); font-size: 3.6rem; color: var(--e-bg); }
+  .caller.ring::before, .caller.ring::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--e-accent); animation: wave 2s ease-out infinite; }
+  .caller.ring::after { animation-delay: 1s; }
+  @keyframes wave { from { transform: scale(1); opacity: .8; } to { transform: scale(1.7); opacity: 0; } }
+  .who { font-family: var(--serif); font-size: 2.4rem; line-height: 1.15; }
+  .kicker { font-size: 1.1rem; color: var(--e-muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 10px; }
+
+  /* in call */
+  .incall { flex: 1; display: flex; flex-direction: column; min-height: 0; padding-top: 12px; }
+  .now { font-family: var(--serif); font-size: 1.75rem; line-height: 1.35; min-height: 3em; }
+  .captions { flex: 1; overflow-y: auto; margin: 16px 0; min-height: 80px; max-height: 34vh; mask-image: linear-gradient(to bottom, transparent, #000 24px); padding-top: 18px; }
+  .captions .bubble { font-size: 1.05rem; color: var(--e-ink); max-width: 90%; }
+  .captions .bubble.agent { background: var(--e-panel); color: var(--e-muted); }
+  .captions .bubble.elder { background: #2b3d30; }
+  .state { display: flex; align-items: center; justify-content: center; gap: 14px; min-height: 64px; font-size: 1.25rem; color: var(--e-muted); }
+  .state.listening { color: var(--e-ink); }
+  .bars { display: flex; align-items: center; gap: 5px; height: 40px; }
+  .bars i { display: block; width: 6px; height: 8px; border-radius: 3px; background: var(--e-green); transition: height .08s; }
+  .state:not(.listening) .bars { display: none; }
+  .typebox { display: flex; gap: 8px; margin-bottom: 14px; }
+  .typebox input { background: var(--e-panel); color: var(--e-ink); border-color: var(--e-line); font-size: 1.1rem; }
+  .typebox button { color: var(--e-ink); border-color: var(--e-line); }
+
+  .app select { background: var(--e-panel); color: var(--e-ink); border-color: var(--e-line); font-size: 1.2rem; padding: 14px; margin-top: 10px; }
+  .note { font-size: 1rem; color: var(--e-muted); line-height: 1.45; }
+  .toast { background: var(--e-ink); color: var(--e-bg); }
+  @media (max-height: 640px) { .greet { margin-top: 20px; } .bigbtn { min-height: 70px; } .bigbtn.tall { min-height: 96px; } }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="/static/common.js"></script>
+<script src="/static/elder.js"></script>
+</body>
+</html>

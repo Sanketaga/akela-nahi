@@ -1,0 +1,19 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+data/
+data_preview/
+.pytest_cache/
+video/node_modules/
+video/snapshots/
+video/capture/
+video/check.json
+video/boards/.film.html
+video/boards/.posed.html
+check.tmp.json
+video/.hyperframes/
+video/.thumbnails/
+video/.waveform-cache/
+# Bundled Pixabay sound effects: used in the video, not redistributed as files
+video/assets/sfx/*.mp3

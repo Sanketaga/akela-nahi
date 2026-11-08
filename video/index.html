@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces.ttf"); font-weight: 100 900; }
+      @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-Regular.ttf"); font-weight: 400; }
+      @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-Medium.ttf"); font-weight: 500; }
+      @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-SemiBold.ttf"); font-weight: 600; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1080px; overflow: hidden; background: #14110e; }
+      #root { width: 100%; height: 100%; position: relative; font-family: "Mukta", sans-serif; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="61" data-width="1080" data-height="1080">
+      <div id="hook" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="6" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1080"></div>
+      <div id="tension" data-composition-id="tension" data-composition-src="compositions/tension.html" data-start="6" data-duration="7.5" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1080"></div>
+      <div id="reveal" data-composition-id="reveal" data-composition-src="compositions/reveal.html" data-start="13.5" data-duration="3.5" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1080"></div>
+      <div id="papa" data-composition-id="papa" data-composition-src="compositions/papa.html" data-start="17" data-duration="12" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1080"></div>
+      <div id="sanket" data-composition-id="sanket" data-composition-src="compositions/sanket.html" data-start="29" data-duration="7" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1080"></div>
+      <div id="message" data-composition-id="message" data-composition-src="compositions/message.html" data-start="36" data-duration="9" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1080"></div>
+      <div id="help" data-composition-id="help" data-composition-src="compositions/help.html" data-start="45" data-duration="6" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1080"></div>
+      <div id="claim" data-composition-id="claim" data-composition-src="compositions/claim.html" data-start="51" data-duration="6" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1080"></div>
+      <div id="endcard" data-composition-id="endcard" data-composition-src="compositions/endcard.html" data-start="57" data-duration="4" data-track-index="1" data-track-kind="graphics" data-width="1080" data-height="1080"></div>
+      <div id="captions" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="0" data-duration="61" data-track-index="2" data-track-kind="captions" data-width="1080" data-height="1080"></div>
+
+      <audio id="vo1" class="clip" src="assets/vo/vo1.wav" data-duration="4.0" data-start="0.4" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo2" class="clip" src="assets/vo/vo2.wav" data-duration="6.4" data-start="6.4" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo3" class="clip" src="assets/vo/vo3.wav" data-duration="2.31" data-start="13.9" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo4" class="clip" src="assets/vo/vo4.wav" data-duration="4.44" data-start="17.2" data-track-index="10" data-volume="1"></audio>
+      <audio id="app1" class="clip" src="assets/vo/app1.wav" data-duration="2.04" data-start="23.6" data-track-index="11" data-volume="1"></audio>
+      <audio id="app2" class="clip" src="assets/vo/app2.wav" data-duration="2.49" data-start="26.0" data-track-index="11" data-volume="1"></audio>
+      <audio id="vo5" class="clip" src="assets/vo/vo5.wav" data-duration="5.07" data-start="29.4" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo6" class="clip" src="assets/vo/vo6.wav" data-duration="5.16" data-start="36.4" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo7" class="clip" src="assets/vo/vo7.wav" data-duration="4.44" data-start="45.4" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo8" class="clip" src="assets/vo/vo8.wav" data-duration="4.8" data-start="51.4" data-track-index="10" data-volume="1"></audio>
+
+      <!-- Sound on visible actions; each placed so its peak lands one frame after its picture. -->
+      <audio id="sx-hangup" class="clip" src="assets/sfx/click-soft.mp3" data-start="5.01" data-duration="0.36" data-track-index="12" data-volume="0.6"></audio>
+      <audio id="sx-flood" class="clip" src="assets/sfx/whoosh.mp3" data-start="13.27" data-duration="0.57" data-track-index="12" data-volume="0.55"></audio>
+      <audio id="sx-recede" class="clip" src="assets/sfx/whoosh-cinematic.mp3" data-start="14.8" data-duration="4.4" data-track-index="13" data-volume="0.45"></audio>
+      <audio id="sx-ring1" class="clip" src="assets/sfx/ring.wav" data-start="21.7" data-duration="0.85" data-track-index="12" data-volume="0.8"></audio>
+      <audio id="sx-answer" class="clip" src="assets/sfx/click-soft.mp3" data-start="23.16" data-duration="0.36" data-track-index="12" data-volume="0.6"></audio>
+      <audio id="sx-slide1" class="clip" src="assets/sfx/whoosh.mp3" data-start="29.22" data-duration="0.57" data-track-index="12" data-volume="0.5"></audio>
+      <audio id="sx-ask" class="clip" src="assets/sfx/pop.mp3" data-start="31.51" data-duration="0.72" data-track-index="12" data-volume="0.5"></audio>
+      <audio id="sx-slide2" class="clip" src="assets/sfx/whoosh-short.mp3" data-start="36.15" data-duration="0.57" data-track-index="13" data-volume="0.4"></audio>
+      <audio id="sx-typing" class="clip" src="assets/sfx/typing.mp3" data-start="36.25" data-duration="1.5" data-track-index="12" data-volume="0.45"></audio>
+      <audio id="sx-send" class="clip" src="assets/sfx/click.mp3" data-start="38.26" data-duration="0.36" data-track-index="13" data-volume="0.6"></audio>
+      <audio id="sx-carry" class="clip" src="assets/sfx/whoosh.mp3" data-start="38.67" data-duration="0.57" data-track-index="12" data-volume="0.45"></audio>
+      <audio id="sx-ring2" class="clip" src="assets/sfx/ring.wav" data-start="39.2" data-duration="0.85" data-track-index="13" data-volume="0.8"></audio>
+      <audio id="sx-reply" class="clip" src="assets/sfx/pop.mp3" data-start="41.61" data-duration="0.72" data-track-index="12" data-volume="0.5"></audio>
+      <audio id="sx-urgent" class="clip" src="assets/sfx/impact-bass-1.mp3" data-start="47.26" data-duration="2.1" data-track-index="12" data-volume="0.5"></audio>
+      <audio id="sx-close" class="clip" src="assets/sfx/whoosh-cinematic.mp3" data-start="48.85" data-duration="4.4" data-track-index="13" data-volume="0.45"></audio>
+      <audio id="sx-mark" class="clip" src="assets/sfx/pop.mp3" data-start="57.23" data-duration="0.72" data-track-index="12" data-volume="0.55"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

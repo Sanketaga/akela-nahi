@@ -1,0 +1,39 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces.ttf"); font-weight: 100 900; }
+    @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-Medium.ttf"); font-weight: 500; }
+    @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-SemiBold.ttf"); font-weight: 600; }
+    #root { position: absolute; inset: 0; font-family: "Mukta", sans-serif; }
+    #sa-left { position: absolute; left: 0; top: 0; width: 1080px; height: 1080px; background: #14110e; overflow: hidden; }
+    #sa-phone { position: absolute; left: 9px; top: 270px; width: 252px; height: 529px; border-radius: 36px; background: #221d18; border: 1px solid #3a322a; overflow: hidden; }
+    #sa-phone img { position: absolute; left: 7px; top: 7px; width: 238px; height: 515px; border-radius: 30px; object-fit: cover; }
+    #sa-right { position: absolute; left: 270px; top: 0; width: 810px; height: 1080px; background: #f4efe6; }
+    #sa-seam { position: absolute; left: 268px; top: 0; width: 4px; height: 1080px; background: #a8461f; }
+    #sa-where { position: absolute; left: 318px; top: 72px; font-size: 28px; color: #6b6258; }
+    #sa-card { position: absolute; left: 318px; top: 128px; width: 712px; height: 475px; border-radius: 18px; border: 1px solid #e2d9ca; object-fit: cover; box-shadow: 0 12px 32px rgba(60,40,20,.10); }
+    /* The card's "When you call, ask about" box, rebuilt at 2x with its real text. */
+    #sa-ask { transform-origin: 50% 0%; position: absolute; left: 318px; top: 640px; width: 712px; padding: 26px 32px; border-radius: 18px; background: #f3e1d4; }
+    #sa-ask-k { color: #a8461f; font-size: 28px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+    #sa-ask-v { margin-top: 6px; color: #1f1a15; font: 500 40px/1.25 "Fraunces", serif; }
+  </style>
+  <div id="root" data-composition-id="sanket" data-width="1080" data-height="1080">
+    <div id="sa-left"><div id="sa-phone"><img src="assets/screens/elder-idle.png" alt="Papa's app back on its home screen" /></div></div>
+    <div id="sa-right"></div>
+    <div id="sa-seam"></div>
+    <div id="sa-where">8:31 · Sanket's Akela Nahi page</div>
+    <img id="sa-card" src="assets/screens/family-today.png" alt="The real Latest check-in card: slept well, has eaten, medicines not yet, knee pain, good mood" />
+    <div id="sa-ask"><div id="sa-ask-k">When you call, ask about</div><div id="sa-ask-v">how the knee pain is; whether they took their medicines later</div></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // The seam slides from Papa's side over to Sanket's page.
+    tl.fromTo("#sa-right, #sa-seam", { x: 400 }, { x: 0, duration: 0.7, ease: "power3.inOut" }, 0);
+    tl.fromTo("#sa-phone", { x: 120, opacity: 0.4 }, { x: 0, opacity: 1, duration: 0.7, ease: "power3.inOut" }, 0);
+    tl.fromTo("#sa-where", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.6);
+    tl.fromTo("#sa-card", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, 0.6);
+    // "What to ask" is pulled forward at twice its size; the card steps back.
+    tl.to("#sa-card", { opacity: 0.55, duration: 0.4 }, 2.6);
+    tl.fromTo("#sa-ask", { y: -150, scale: 0.6, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.6, ease: "power3.out" }, 2.6);
+    window.__timelines["sanket"] = tl;
+  </script>
+</template>

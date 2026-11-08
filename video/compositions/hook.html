@@ -1,0 +1,57 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces.ttf"); font-weight: 100 900; }
+    @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-Medium.ttf"); font-weight: 500; }
+    #root { position: absolute; inset: 0; font-family: "Mukta", sans-serif; }
+    #hook-left { position: absolute; left: 0; top: 0; width: 540px; height: 1080px; background: #14110e; }
+    #hook-right { position: absolute; left: 540px; top: 0; width: 540px; height: 1080px; background: #f4efe6; }
+    #hook-seam { position: absolute; left: 538px; top: 0; width: 4px; height: 1080px; background: #a8461f; }
+    .hook-where { position: absolute; top: 72px; font-size: 28px; font-weight: 500; }
+    #hook-where-l { left: 64px; color: #b3a797; }
+    #hook-where-r { left: 604px; color: #6b6258; }
+    /* An ordinary phone call (drawn: this is not the product). */
+    #hook-phone { position: absolute; left: 80px; top: 150px; width: 380px; height: 780px; border-radius: 52px; background: #221d18; border: 1px solid #3a322a; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+    #hook-avatar { position: absolute; left: 130px; top: 150px; width: 120px; height: 120px; border-radius: 50%; background: #3a322a; color: #f6efe5; font: 500 56px "Fraunces", serif; display: flex; align-items: center; justify-content: center; }
+    #hook-name { position: absolute; left: 0; width: 380px; top: 296px; text-align: center; color: #f6efe5; font: 500 48px "Fraunces", serif; }
+    #hook-timer { position: absolute; left: 0; width: 380px; top: 366px; text-align: center; color: #b3a797; font-size: 32px; font-variant-numeric: tabular-nums; }
+    #hook-call { position: absolute; inset: 0; }
+    #hook-end { position: absolute; left: 150px; top: 620px; width: 80px; height: 80px; border-radius: 50%; background: #c8392d; }
+    #hook-end svg { position: absolute; left: 20px; top: 20px; width: 40px; height: 40px; }
+    #hook-quote { position: absolute; left: 604px; top: 300px; width: 420px; color: #1f1a15; font: 500 88px/1.05 "Fraunces", serif; letter-spacing: -1.5px; }
+    #hook-quote .hw { display: inline-block; }
+    #hook-quote em { font-style: normal; color: #a8461f; }
+    #hook-sub { position: absolute; left: 604px; top: 680px; width: 400px; color: #6b6258; font-size: 30px; line-height: 1.35; }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1080" data-height="1080">
+    <div id="hook-left"></div>
+    <div id="hook-right"></div>
+    <div id="hook-seam"></div>
+    <div id="hook-where-l" class="hook-where">Papa, at home</div>
+    <div id="hook-where-r" class="hook-where">Sanket, 1,400 km away</div>
+    <div id="hook-phone">
+      <div id="hook-call"><div id="hook-avatar">S</div>
+      <div id="hook-name">Sanket</div>
+      <div id="hook-timer">1:48</div></div>
+      <div id="hook-end"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 13.3a11 11 0 0 0 3.3 2.2L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 5.6 14.4M3 6a2 2 0 0 1 2-2h4l2 5-2.5 1.5"/><path d="M3 21 21 3"/></svg></div>
+    </div>
+    <div id="hook-quote"><span class="hw">“Haan</span> <span class="hw">beta,</span> <span class="hw">sab</span> <em class="hw">theek</em> <span class="hw">hai.”</span></div>
+    <div id="hook-sub">The same answer, every call.</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Call timer counts on (deterministic: a function of timeline time).
+    const clock = { s: 108 };
+    tl.fromTo(clock, { s: 108 }, { s: 113, duration: 5, ease: "none", onUpdate: () => {
+      const s = Math.floor(clock.s); document.querySelector("#hook-timer").textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+    } }, 0);
+    // "theek" turns to the accent as he says it.
+    tl.fromTo("#hook-quote em", { color: "#1f1a15" }, { color: "#a8461f", duration: 0.25 }, 2.9);
+    tl.fromTo("#hook-sub", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2 }, 3.0);
+    // Sanket ends the call, satisfied.
+    tl.to("#hook-end", { scale: 0.88, duration: 0.08, ease: "power2.in" }, 5.05);
+    tl.to("#hook-end", { scale: 1, duration: 0.12, ease: "power2.out" }, 5.13);
+    tl.to("#hook-call", { opacity: 0.35, duration: 0.2 }, 5.15);
+    tl.to("#hook-quote, #hook-sub", { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power2.in" }, 5.7);
+    window.__timelines["hook"] = tl;
+  </script>
+</template>

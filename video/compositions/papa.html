@@ -1,0 +1,54 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces.ttf"); font-weight: 100 900; }
+    @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-Medium.ttf"); font-weight: 500; }
+    #root { position: absolute; inset: 0; font-family: "Mukta", sans-serif; }
+    #pa-left { position: absolute; left: 0; top: 0; width: 670px; height: 1080px; background: #14110e; }
+    #pa-right { position: absolute; left: 670px; top: 0; width: 410px; height: 1080px; background: #f4efe6; }
+    #pa-seam { position: absolute; left: 668px; top: 0; width: 4px; height: 1080px; background: #a8461f; }
+    #pa-where-l { position: absolute; left: 64px; top: 72px; font-size: 28px; color: #b3a797; }
+    #pa-phone { transform-origin: 50% 62%; position: absolute; left: 155px; top: 128px; width: 360px; height: 756px; border-radius: 50px; background: #221d18; border: 1px solid #3a322a; box-shadow: 0 24px 60px rgba(0,0,0,.35); overflow: hidden; }
+    .pa-screen { position: absolute; left: 10px; top: 10px; width: 340px; height: 736px; border-radius: 42px; object-fit: cover; }
+    #pa-time { position: absolute; left: 726px; top: 240px; color: #1f1a15; font: 500 104px/1 "Fraunces", serif; letter-spacing: -3px; }
+    #pa-am { position: absolute; left: 730px; top: 352px; color: #6b6258; font-size: 32px; }
+    #pa-busy { position: absolute; left: 730px; top: 430px; width: 300px; color: #1f1a15; font-size: 34px; line-height: 1.3; }
+    /* Rebuilt at 2x from the family page's live notice ("Ringing Papa's app"). */
+    #pa-live { position: absolute; left: 726px; top: 600px; width: 310px; padding: 18px 22px; border-radius: 16px; background: #e1eee4; color: #2c6e49; font-size: 30px; font-weight: 500; display: flex; align-items: center; gap: 14px; }
+    #pa-flood { position: absolute; left: 0; top: 0; width: 1080px; height: 1080px; background: #a8461f; transform-origin: 670px 50%; }
+    #pa-dot { width: 16px; height: 16px; border-radius: 50%; background: #2c6e49; flex: none; }
+  </style>
+  <div id="root" data-composition-id="papa" data-width="1080" data-height="1080">
+    <div id="pa-left"></div>
+    <div id="pa-right"></div>
+    <div id="pa-seam"></div>
+    <div id="pa-where-l">Papa's phone</div>
+    <div id="pa-phone">
+      <img id="pa-ring" class="pa-screen" src="assets/screens/elder-ring-checkin.png" alt="Papa's Akela Nahi app ringing for the morning check-in" />
+      <img id="pa-call" class="pa-screen" src="assets/screens/elder-incall-listening.png" alt="The check-in call in Hindi, listening for Papa's answer" />
+    </div>
+    <div id="pa-time">8:30</div>
+    <div id="pa-am">Monday morning</div>
+    <div id="pa-busy">Sanket is in a meeting.</div>
+    <div id="pa-flood"></div>
+    <div id="pa-live"><div id="pa-dot"></div>Papa is on the call now</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // The accent recedes into the seam at its new place.
+    tl.fromTo("#pa-flood", { scaleX: 1 }, { scaleX: 0, duration: 0.55, ease: "power2.inOut" }, 0);
+    tl.fromTo("#pa-phone", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 0.35);
+    tl.fromTo("#pa-where-l", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.5);
+    tl.fromTo("#pa-time", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2 }, 0.5);
+    tl.fromTo("#pa-am", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.8);
+    tl.fromTo("#pa-busy", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.6);
+    // The ring: the phone buzzes with the app's ringtone.
+    tl.fromTo("#pa-phone", { x: 0 }, { keyframes: { x: [0, 4, -4, 4, -4, 0, 0, 4, -4, 4, -4, 0] }, duration: 1.4, ease: "none" }, 4.7);
+    // He answers: the real in-call screen, then the camera pushes in to read it.
+    tl.fromTo("#pa-call", { opacity: 0 }, { opacity: 0, duration: 0.01 }, 0);
+    tl.to("#pa-call", { opacity: 1, duration: 0.25 }, 6.2);
+    tl.fromTo("#pa-live", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 6.4);
+    tl.to("#pa-phone", { scale: 1.32, y: -40, duration: 0.7, ease: "power2.inOut" }, 6.6);
+    tl.to("#pa-where-l", { opacity: 0, duration: 0.25 }, 6.6);
+    window.__timelines["papa"] = tl;
+  </script>
+</template>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f4efe6">
+<title>Akela Nahi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Mukta:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <a class="wordmark" href="/family"><span class="mark" aria-hidden="true"></span>Akela Nahi</a>
+    <span class="spacer"></span>
+    <nav>
+      <select id="elderSelect" class="switcher" aria-label="Choose family member"></select>
+      <button class="ghost" id="notifyBtn" title="Get a pop-up on this device when a new update arrives">Notify me</button>
+      <button class="ghost" id="editElderBtn">Settings</button>
+      <button class="ghost" id="addElderBtn">Add parent</button>
+    </nav>
+  </header>
+
+  <section id="noElders" class="welcome" hidden>
+    <h1>Someone should ask how they slept.</h1>
+    <p>Add your parent or grandparent. Their Akela Nahi app rings every morning, a kind voice checks on them in their own language, and you read how they are here.</p>
+    <button class="primary" id="addFirstBtn">Add parent</button>
+  </section>
+
+  <div id="main" hidden>
+    <section class="hero">
+      <div class="who">
+        <div class="eyebrow" id="heroEyebrow"></div>
+        <h1 id="heroName"></h1>
+        <div class="status-line" id="heroStatus"></div>
+      </div>
+      <div class="cta">
+        <a class="btn" id="elderLink" href="/elder" target="_blank">Open their app</a>
+        <button class="primary" id="callNowBtn">Ring for a check-in</button>
+      </div>
+    </section>
+
+    <div id="alertStrip"></div>
+
+    <div class="cols">
+      <div class="col">
+        <section class="panel today" id="todayCard"></section>
+
+        <section class="panel composer">
+          <div class="panel-head"><h2>Send <span class="lbl"></span> a message</h2></div>
+          <p class="hint">Write it in <span id="langName"></span> or Hinglish. It's read out exactly as you write it<span id="voiceNote"></span>, and their spoken reply comes back here.</p>
+          <textarea id="relayText" maxlength="500" placeholder="Papa, main Sunday subah ghar aa raha hoon. Aankh ki dawai daalna mat bhoolna."></textarea>
+          <div class="row">
+            <button class="primary" id="relayBtn">Ring and deliver now</button>
+            <button class="ghost" id="askBtn" title="Asked in the next morning check-in instead">Ask in next check-in</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Calls</h2></div>
+          <ul class="clean history" id="history"></ul>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2>Updates</h2><span class="spacer"></span><span class="small muted">with a spoken version</span></div>
+          <div class="feed"><div class="timeline" id="updates"></div></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Questions waiting</h2></div>
+          <ul class="clean" id="questions"></ul>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Alert history</h2></div>
+          <ul class="clean" id="alerts"></ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span id="engine"></span>
+    <span class="spacer"></span>
+    <span>Synthetic test data only. No call audio is stored.</span>
+  </footer>
+</div>
+
+<dialog id="elderDlg">
+  <form method="dialog" class="dlg-body" id="elderForm">
+    <div class="dlg-head">
+      <h2 id="elderDlgTitle">Add parent</h2>
+      <p class="muted small">Ask them first. This only works if they're happy to get a call every day.</p>
+    </div>
+    <fieldset>
+      <legend>About them</legend>
+      <div class="form-grid">
+        <div><label for="f_name">What the caller calls them</label><input id="f_name" required maxlength="60" placeholder="Sharma ji, Amma"></div>
+        <div><label for="f_family_label">What you call them</label><input id="f_family_label" required maxlength="40" placeholder="Papa"></div>
+        <div><label for="f_language">Their language</label><select id="f_language"></select></div>
+        <div><label for="f_medicines">Their medicines</label><input id="f_medicines" maxlength="300" placeholder="BP tablet, Metformin"></div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>The daily call</legend>
+      <div class="form-grid">
+        <div><label for="f_call_time">Time</label><input id="f_call_time" type="time" value="08:30"></div>
+        <div><label for="f_voice">Caller's voice</label><select id="f_voice"></select></div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>About you</legend>
+      <div class="form-grid">
+        <div><label for="f_family_name">Your name</label><input id="f_family_name" required maxlength="60" placeholder="Rahul"></div>
+        <div><label for="f_family_relation">You are their</label><select id="f_family_relation"><option>son</option><option>daughter</option><option>grandson</option><option>granddaughter</option><option>nephew</option><option>niece</option><option>relative</option></select></div>
+        <div><label for="f_family_language">Your updates in</label><select id="f_family_language"></select></div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <label class="check"><input type="checkbox" id="f_share_transcript"> They agreed that I can read their exact words. Otherwise I see only the summary and safety alerts.</label>
+      <label class="check"><input type="checkbox" id="f_active" checked> Daily check-in is on</label>
+    </fieldset>
+    <div id="voiceBox" class="subpanel" hidden>
+      <legend>Your voice for messages</legend>
+      <p class="muted small" style="margin-bottom:12px">Record 10–20 seconds of yourself talking normally in a quiet room. Your messages are then spoken in your voice, always introduced as a message from you. Only record your own voice.</p>
+      <label class="check"><input type="checkbox" id="f_voice_consent"> This is my own voice and I agree to it being cloned for messages to my parent.</label>
+      <div class="row" style="margin-top:12px">
+        <button type="button" id="recVoiceBtn">Record</button>
+        <span id="recVoiceStatus" class="muted small"></span>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <label class="check"><input type="checkbox" id="f_use_family_voice"> Use my voice</label>
+        <span class="spacer"></span>
+        <button type="button" class="ghost" id="delVoiceBtn">Delete my voice</button>
+      </div>
+    </div>
+    <div class="dlg-foot">
+      <button value="cancel" class="ghost" formnovalidate>Cancel</button>
+      <button class="primary" id="saveElderBtn" value="default">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="callDlg"><div class="dlg-body"><div id="callBody"></div>
+  <div class="dlg-foot"><button id="closeCallDlg">Close</button></div></div>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+<script src="/static/common.js"></script>
+<script src="/static/family.js"></script>
+</body>
+</html>

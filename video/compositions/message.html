@@ -1,0 +1,69 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces.ttf"); font-weight: 100 900; }
+    @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-Medium.ttf"); font-weight: 500; }
+    #root { position: absolute; inset: 0; font-family: "Mukta", sans-serif; }
+    #me-left { position: absolute; left: 0; top: 0; width: 540px; height: 1080px; background: #14110e; }
+    #me-right { position: absolute; left: 540px; top: 0; width: 810px; height: 1080px; background: #f4efe6; }
+    #me-seam { position: absolute; left: 538px; top: 0; width: 4px; height: 1080px; background: #a8461f; }
+    #me-phone { position: absolute; left: 90px; top: 128px; width: 360px; height: 756px; border-radius: 50px; background: #221d18; border: 1px solid #3a322a; box-shadow: 0 24px 60px rgba(0,0,0,.35); overflow: hidden; }
+    .me-screen { position: absolute; left: 10px; top: 10px; width: 340px; height: 736px; border-radius: 42px; object-fit: cover; }
+    /* The family page's message box, rebuilt at 2x with its real labels. */
+    #me-h { position: absolute; left: 588px; top: 128px; width: 460px; color: #1f1a15; font: 500 46px/1.1 "Fraunces", serif; }
+    #me-box { position: absolute; left: 588px; top: 200px; width: 452px; padding: 20px 22px; border-radius: 18px; border: 2px solid #d3c7b4; background: #fbf8f2; color: #1f1a15; font-size: 32px; line-height: 1.3; }
+    #me-btn { position: absolute; left: 588px; top: 410px; padding: 14px 28px; border-radius: 999px; background: #a8461f; color: #fff8f2; font-size: 30px; font-weight: 500; }
+    /* The update that comes back, rebuilt at 2x from the Updates feed. */
+    #me-chip { position: absolute; left: 600px; top: 470px; padding: 14px 20px; border-radius: 16px; background: #fbf8f2; color: #1f1a15; font-size: 28px; box-shadow: 0 10px 30px rgba(0,0,0,.25); white-space: nowrap; }
+    #me-reply { position: absolute; left: 588px; top: 560px; width: 452px; padding: 22px 24px 24px 30px; border-left: 4px solid #2c6e49; background: #fbf8f2; border-radius: 0 18px 18px 0; }
+    #me-reply-t { color: #6b6258; font-size: 28px; }
+    #me-reply-b { margin-top: 4px; color: #1f1a15; font-size: 30px; line-height: 1.3; }
+    #me-reply-q { margin-top: 8px; color: #1f1a15; font: 500 36px/1.3 "Mukta", sans-serif; }
+  </style>
+  <div id="root" data-composition-id="message" data-width="1080" data-height="1080">
+    <div id="me-left"></div>
+    <div id="me-right" data-layout-ignore></div>
+    <div id="me-seam"></div>
+    <div id="me-phone">
+      <img id="me-idle" class="me-screen" src="assets/screens/elder-idle.png" alt="Papa's app on its home screen" />
+      <img id="me-ring" class="me-screen" src="assets/screens/elder-ring-relay.png" alt="Papa's app ringing with Sanket's message" />
+      <img id="me-speak" class="me-screen" src="assets/screens/elder-relay-speaking.png" alt="Papa's app reading out Sanket's message" />
+    </div>
+    <div id="me-h">Send Papa a message</div>
+    <div id="me-box"><span id="me-text">Papa, main Sunday subah ghar aa raha hoon. Dawai time pe lena.</span></div>
+    <div id="me-chip" data-layout-ignore>Papa, main Sunday subah ghar aa raha hoon…</div>
+    <div id="me-btn">Ring and deliver now</div>
+    <div id="me-reply">
+      <div id="me-reply-t">9 Nov, 8:34</div>
+      <div id="me-reply-b">Papa heard your message at 8:33 AM. Their reply:</div>
+      <div id="me-reply-q">“हाँ बेटा, आ जाओ। तुम्हारी पसंद का खाना बनवाऊँगा।”</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // The seam slides back to the middle.
+    tl.fromTo("#me-right, #me-seam", { x: -270 }, { x: 0, duration: 0.6, ease: "power3.inOut" }, 0);
+    tl.fromTo("#me-phone", { x: -120, opacity: 0.5 }, { x: 0, opacity: 1, duration: 0.6, ease: "power3.inOut" }, 0);
+    tl.fromTo("#me-h", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.4);
+    tl.fromTo("#me-box", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.5);
+    // Sanket types (character by character, from timeline time).
+    const msg = "Papa, main Sunday subah ghar aa raha hoon. Dawai time pe lena.";
+    const typed = { n: 0 };
+    tl.fromTo(typed, { n: 0 }, { n: msg.length, duration: 1.4, ease: "none", onUpdate: () => {
+      document.querySelector("#me-text").textContent = msg.slice(0, Math.round(typed.n));
+    } }, 0.7);
+    tl.fromTo("#me-btn", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.6);
+    tl.to("#me-btn", { scale: 0.93, duration: 0.08, ease: "power2.in" }, 2.3);
+    tl.to("#me-btn", { scale: 1, duration: 0.14, ease: "power2.out" }, 2.38);
+    // The message is carried across the seam to Papa's phone.
+    tl.fromTo("#me-chip", { x: 0, y: 0, scale: 1, opacity: 0 }, { opacity: 1, duration: 0.1 }, 2.4);
+    tl.to("#me-chip", { x: -420, y: 40, scale: 0.55, filter: "blur(0px)", duration: 0.6, ease: "power2.inOut" }, 2.5);
+    tl.to("#me-chip", { opacity: 0, duration: 0.15 }, 3.05);
+    tl.fromTo("#me-ring", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 3.0);
+    tl.to("#me-phone", { keyframes: { x: [0, 4, -4, 4, -4, 0] }, duration: 0.7, ease: "none" }, 3.2);
+    tl.fromTo("#me-speak", { opacity: 0 }, { opacity: 0, duration: 0.01 }, 0);
+    tl.to("#me-speak", { opacity: 1, duration: 0.25 }, 4.0);
+    // His reply comes back to Sanket's page.
+    tl.fromTo("#me-reply", { x: -380, opacity: 0, scale: 0.7 }, { x: 0, opacity: 1, scale: 1, duration: 0.65, ease: "power3.out" }, 5.7);
+    window.__timelines["message"] = tl;
+  </script>
+</template>

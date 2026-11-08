@@ -1,0 +1,32 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces.ttf"); font-weight: 100 900; }
+    @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-Medium.ttf"); font-weight: 500; }
+    #root { position: absolute; inset: 0; background: #f4efe6; font-family: "Mukta", sans-serif; }
+    #en-ground { position: absolute; inset: 0; background: #14110e; }
+    #en-mark { position: absolute; left: 470px; top: 250px; width: 140px; height: 140px; border-radius: 50%; background: #a8461f; }
+    #en-hole { position: absolute; left: 64px; top: 32px; width: 64px; height: 76px; border-radius: 50%; background: #14110e; }
+    #en-name { position: absolute; left: 0; width: 1080px; top: 430px; text-align: center; color: #f6efe5; font: 500 112px/1 "Fraunces", serif; letter-spacing: -3px; }
+    #en-built { position: absolute; left: 0; width: 1080px; top: 600px; text-align: center; color: #f6efe5; font-size: 38px; }
+    #en-models { position: absolute; left: 0; width: 1080px; top: 656px; text-align: center; color: #b3a797; font-size: 30px; }
+    #en-tags { position: absolute; left: 0; width: 1080px; top: 800px; text-align: center; color: #e08a5f; font-size: 28px; }
+  </style>
+  <div id="root" data-composition-id="endcard" data-width="1080" data-height="1080">
+    <div id="en-ground"></div>
+    <div id="en-mark"><div id="en-hole"></div></div>
+    <div id="en-name"><span class="el">A</span><span class="el">k</span><span class="el">e</span><span class="el">l</span><span class="el">a</span> <span class="el">N</span><span class="el">a</span><span class="el">h</span><span class="el">i</span></div>
+    <div id="en-built">Built on Gnani AI</div>
+    <div id="en-models">Prisma v3 listens · Timbre v3 speaks</div>
+    <div id="en-tags">#GnaniAI  #GreatIndianAIInternshipChallenge</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#en-ground", { clipPath: "circle(0% at 50% 30%)" }, { clipPath: "circle(150% at 50% 30%)", duration: 0.5, ease: "power2.inOut" }, 0);
+    tl.fromTo("#en-mark", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.5)" }, 0.25);
+    tl.fromTo(".el", { opacity: 0, filter: "blur(4px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.12, stagger: 0.06 }, 0.7);
+    tl.fromTo("#en-built", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.2);
+    tl.fromTo("#en-models", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.5);
+    tl.fromTo("#en-tags", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.8);
+    window.__timelines["endcard"] = tl;
+  </script>
+</template>

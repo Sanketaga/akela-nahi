@@ -1,0 +1,46 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces.ttf"); font-weight: 100 900; }
+    @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-Medium.ttf"); font-weight: 500; }
+    @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-SemiBold.ttf"); font-weight: 600; }
+    #root { position: absolute; inset: 0; font-family: "Mukta", sans-serif; }
+    #he-left { position: absolute; left: 0; top: 0; width: 540px; height: 1080px; background: #14110e; }
+    #he-right { position: absolute; left: 540px; top: 0; width: 540px; height: 1080px; background: #f4efe6; }
+    #he-seam { position: absolute; left: 538px; top: 0; width: 4px; height: 1080px; background: #a8461f; }
+    #he-phone { position: absolute; left: 90px; top: 128px; width: 360px; height: 756px; border-radius: 50px; background: #221d18; border: 1px solid #3a322a; box-shadow: 0 24px 60px rgba(0,0,0,.35); overflow: hidden; }
+    .he-screen { position: absolute; left: 10px; top: 10px; width: 340px; height: 736px; border-radius: 42px; object-fit: cover; }
+    #he-name { position: absolute; left: 588px; top: 150px; color: #1f1a15; font: 500 96px/1 "Fraunces", serif; letter-spacing: -2px; }
+    /* The family page's urgent strip, rebuilt at 2x with its real text. */
+    #he-content { position: absolute; inset: 0; }
+    #he-alert { transform-origin: 0% 50%; position: absolute; left: 588px; top: 300px; width: 452px; padding: 28px 30px; border-radius: 20px; background: #f7dcd6; color: #a52a1e; }
+    #he-alert-k { font-size: 34px; font-weight: 600; }
+    #he-alert-b { margin-top: 8px; font-size: 34px; line-height: 1.3; }
+    #he-alert-t { margin-top: 10px; font-size: 28px; opacity: .85; }
+    #he-call { position: absolute; left: 588px; top: 640px; width: 452px; color: #1f1a15; font-size: 32px; line-height: 1.35; }
+  </style>
+  <div id="root" data-composition-id="help" data-width="1080" data-height="1080">
+    <div id="he-left"></div>
+    <div id="he-right"></div>
+    <div id="he-seam"></div>
+    <div id="he-phone">
+      <img id="he-confirm" class="he-screen" src="assets/screens/elder-help-confirm.png" alt="Papa's app asking to confirm the Help alert" />
+      <img id="he-sent" class="he-screen" src="assets/screens/elder-help-sent.png" alt="Papa's app saying Sanket has been told, and to dial 108 if serious" />
+    </div>
+    <div id="he-content">
+    <div id="he-name">Papa</div>
+    <div id="he-alert"><div id="he-alert-k">Urgent</div><div id="he-alert-b">Pressed the HELP button on the Akela Nahi app</div><div id="he-alert-t">9 Nov, 8:41</div></div>
+    <div id="he-call">Told to dial 108 if it's serious.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#he-content", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2 }, 0);
+    tl.fromTo("#he-confirm", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0);
+    tl.fromTo("#he-name", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.3);
+    tl.fromTo("#he-sent", { opacity: 0 }, { opacity: 0, duration: 0.01 }, 0);
+    tl.to("#he-sent", { opacity: 1, duration: 0.25 }, 2.2);
+    tl.fromTo("#he-alert", { opacity: 0, scale: 0.9, x: -60 }, { opacity: 1, scale: 1, x: 0, duration: 0.5, ease: "power3.out" }, 2.3);
+    tl.fromTo("#he-call", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 3.3);
+    window.__timelines["help"] = tl;
+  </script>
+</template>

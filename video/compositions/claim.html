@@ -1,0 +1,27 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces.ttf"); font-weight: 100 900; }
+    #root { position: absolute; inset: 0; background: #f4efe6; }
+    #cl-ground { position: absolute; inset: 0; background: #f4efe6; }
+    #cl-1 { position: absolute; left: 96px; top: 300px; width: 900px; color: #6b6258; font: 500 76px/1.08 "Fraunces", serif; letter-spacing: -1.5px; }
+    #cl-2 { position: absolute; left: 96px; top: 520px; width: 900px; color: #1f1a15; font: 500 96px/1.05 "Fraunces", serif; letter-spacing: -2px; }
+    #cl-1 span, #cl-2 .cw2 { display: inline-block; }
+    #cl-dark { position: absolute; left: 0; top: 0; width: 540px; height: 1080px; background: #14110e; }
+    #cl-seam { position: absolute; right: -2px; top: 0; width: 4px; height: 1080px; background: #a8461f; }
+    #cl-2 em { font-style: normal; color: #a8461f; }
+  </style>
+  <div id="root" data-composition-id="claim" data-width="1080" data-height="1080">
+    <div id="cl-ground"></div>
+    <div id="cl-1"><span class="cw1">It</span> <span class="cw1">doesn't</span> <span class="cw1">replace</span> <span class="cw1">your</span> <span class="cw1">call.</span></div>
+    <div id="cl-2"><span class="cw2">It</span> <span class="cw2">tells</span> <span class="cw2">you</span> <span class="cw2">what</span> <em class="cw2">to</em> <em class="cw2">ask.</em></div>
+    <div id="cl-dark"><div id="cl-seam"></div></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // The two halves close: Papa's dark half slides away and one paper frame is left.
+    tl.fromTo("#cl-dark", { x: 0 }, { x: -560, duration: 0.7, ease: "power3.inOut" }, 0);
+    tl.fromTo(".cw1", { color: "#d3c7b4" }, { color: "#6b6258", duration: 0.12, stagger: 0.09 }, 0.5);
+    tl.fromTo(".cw2", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.14, stagger: 0.1, ease: "power2.out" }, 2.6);
+    window.__timelines["claim"] = tl;
+  </script>
+</template>

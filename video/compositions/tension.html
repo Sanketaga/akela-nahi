@@ -1,0 +1,46 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces.ttf"); font-weight: 100 900; }
+    @font-face { font-family: "Mukta"; src: url("assets/fonts/Mukta-Medium.ttf"); font-weight: 500; }
+    #root { position: absolute; inset: 0; font-family: "Mukta", sans-serif; }
+    #ten-left { position: absolute; left: 0; top: 0; width: 540px; height: 1080px; background: #14110e; }
+    #ten-right { position: absolute; left: 540px; top: 0; width: 540px; height: 1080px; background: #f4efe6; }
+    #ten-seam { position: absolute; left: 538px; transform-origin: 50% 50%; top: 0; width: 4px; height: 1080px; background: #a8461f; }
+    .ten-where { position: absolute; top: 72px; font-size: 28px; font-weight: 500; }
+    #ten-where-l { left: 64px; color: #b3a797; }
+    #ten-where-r { left: 604px; color: #6b6258; }
+    .ten-truth { position: absolute; left: 64px; width: 430px; color: #f6efe5; font: 500 52px/1.1 "Fraunces", serif; letter-spacing: -1px; }
+    .ten-truth span { display: block; margin-top: 10px; font: 500 28px "Mukta", sans-serif; color: #b3a797; letter-spacing: 0; }
+    #ten-t1 { top: 220px; }
+    #ten-t2 { top: 470px; }
+    #ten-t3 { top: 720px; }
+    #ten-note { position: absolute; left: 604px; top: 300px; width: 420px; color: #1f1a15; font: 500 76px/1.05 "Fraunces", serif; letter-spacing: -1.5px; }
+    #ten-note-sub { position: absolute; left: 604px; top: 420px; width: 400px; color: #6b6258; font-size: 30px; line-height: 1.35; }
+  </style>
+  <div id="root" data-composition-id="tension" data-width="1080" data-height="1080">
+    <div id="ten-left"></div>
+    <div id="ten-right"></div>
+    <div id="ten-seam"></div>
+    <div id="ten-where-l" class="ten-where">What's really going on</div>
+    <div id="ten-where-r" class="ten-where">What Sanket knows</div>
+    <div id="ten-t1" class="ten-truth">Knee hurts since Saturday<span>didn't want to worry him</span></div>
+    <div id="ten-t2" class="ten-truth">Skipped the BP tablet<span>forgot, twice this week</span></div>
+    <div id="ten-t3" class="ten-truth">Evenings are quiet<span>nobody to talk to</span></div>
+    <div id="ten-note">Papa: fine.</div>
+    <div id="ten-note-sub">Two-minute call on Sunday.</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(".ten-where", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0);
+    tl.fromTo("#ten-note", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2 }, 0.2);
+    tl.fromTo("#ten-note-sub", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.6);
+    [["#ten-t1", 0.6], ["#ten-t2", 2.6], ["#ten-t3", 4.6]].forEach(([s, t]) => {
+      tl.fromTo(s, { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, t);
+    });
+    // The note's tick is wrong: it greys out while the truths stack up.
+    tl.to("#ten-note", { color: "#a89e93", duration: 0.6 }, 5.2);
+    // The seam floods the frame with the accent colour.
+    tl.to("#ten-seam", { scaleX: 280, duration: 0.65, ease: "power3.in" }, 6.85);
+    window.__timelines["tension"] = tl;
+  </script>
+</template>
