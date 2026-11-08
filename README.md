@@ -2,6 +2,8 @@
 
 **Every morning someone asks them how they are. Every evening you know.**
 
+> **Judges:** the 1-page solution pitch is [PITCH.md](PITCH.md) · demo video: [video/akela-nahi-demo.mp4](video/akela-nahi-demo.mp4) · [LinkedIn post](https://www.linkedin.com/feed/update/urn:li:activity:7525267796491087872/)
+
 A daily voice check-in for parents who live alone, in their own language, built only on
 **Gnani AI**. Their Akela Nahi app rings every morning; a warm voice asks about sleep, food,
 medicines, pain and mood, remembers what they said yesterday, and the family gets an update
