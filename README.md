@@ -2,10 +2,12 @@
 
 **Every morning someone asks them how they are. Every evening you know.**
 
-> **Judges:** the 1-page solution pitch is [PITCH.md](PITCH.md) · demo video: [video/akela-nahi-demo.mp4](video/akela-nahi-demo.mp4) · [LinkedIn post](https://www.linkedin.com/feed/update/urn:li:activity:7525267796491087872/)
+> **DSH Hacks V2 (AI x Healthcare) judges:** this branch adds **[Health trends](#health-trends-new-for-dsh-hacks-v2)**, an AI-written 14-day trend report and a one-page report for the doctor. Run it with `start.bat`, add a parent, and press **Load 2 weeks of sample check-ins**.
+>
+> **Great Indian AI Internship Challenge judges:** the 1-page solution pitch is [PITCH.md](PITCH.md) · demo video: [video/akela-nahi-demo.mp4](video/akela-nahi-demo.mp4) · [LinkedIn post](https://www.linkedin.com/feed/update/urn:li:activity:7525267796491087872/). The version submitted there is the `main` branch, built only on Gnani AI.
 
-A daily voice check-in for parents who live alone, in their own language, built only on
-**Gnani AI**. Their Akela Nahi app rings every morning; a warm voice asks about sleep, food,
+A daily voice check-in for parents who live alone, in their own language, built on
+**Gnani AI** for all the voice work. Their Akela Nahi app rings every morning; a warm voice asks about sleep, food,
 medicines, pain and mood, remembers what they said yesterday, and the family gets an update
 with a spoken voice note. The family can also type a message, and the parent hears it read
 out (in the family member's own cloned voice), then replies by speaking.
@@ -21,7 +23,7 @@ Built for the **Great Indian AI Internship Challenge** by Gnani AI.
 | Family messages spoken in the son's / daughter's own voice | **Voice cloning** (`vachana-vc-v1`) | `app/gnani.py` → `create_voice_embedding()`, `synthesize_cloned()` |
 | A spoken version of every family update | **Timbre v3.0** | `app/conversation.py` → `post_update()` |
 
-No other AI service is used. Everything else is plain code:
+The voice is all Gnani AI. The weekly health-trend report (below) is written by an LLM. Everything else is plain code:
 - **The conversation** (`app/brain.py`) is a short script in all 10 languages. The parent's answers
   (from Prisma) are matched against word lists for yes / no / good / bad / lonely and body parts in every
   language. The family always sees the parent's exact words too, so nothing is lost if a word isn't recognised.
@@ -88,15 +90,44 @@ Run the tests:
 - Voice cloning only with the family member's own voice and a consent tick; deletable any time.
 - Set `DASHBOARD_PASSWORD` in `.env` if other people can reach your laptop (username: `family`).
 
+## Health trends (new for DSH Hacks V2)
+
+A two-minute phone call never shows a slow change: the knee pain that comes back every day, the BP tablet
+skipped three times this week, the nights of bad sleep, the parent who sounds a little lower each day.
+The check-ins already capture this every morning, so the family page now turns it into a picture:
+
+- **14-day grid** of medicines, pain, sleep, mood and food (plus missed calls), one column per day.
+- **AI trend report**: an LLM (Gemini or Claude) reads the timeline and pre-computed numbers and writes a headline,
+  the trends that matter with *worse / better / steady* compared with last week, and up to three questions to ask
+  on the next call. Prompt and guardrails: `app/trends.py`.
+- **Report for the doctor**: a printable one-page summary with dates, counts and the grid (`/report/<id>`).
+
+Guardrails, because this is health: the model only gets the parent's check-in facts (no names beyond how the family
+addresses them), must quote numbers from the data, and must never diagnose or suggest a medicine change. Its output is
+checked in code; anything that names a condition or a dose change, or isn't valid JSON, is thrown away and the
+**rules-based report** (computed from the same numbers) is shown instead. The page always says which engine wrote it.
+The report is cached until the check-in data changes, so the model is called at most once per new check-in.
+
+Turn it on by adding one key to `.env` (Gemini has a free tier at https://aistudio.google.com/apikey):
+
+```
+GEMINI_API_KEY=...        # or ANTHROPIC_API_KEY=...
+```
+
+To try it without waiting two weeks: add a parent and press **Load 2 weeks of sample check-ins** on the family page
+(synthetic data), or run `python -m app.demo_history <parent id>`.
+
 ## Project layout
 ```
 app/brain.py         the call script in 10 languages + understanding answers (no AI model)
 app/conversation.py  the call engine (ring → answer → questions → update for the family)
 app/gnani.py         Gnani Prisma STT, Timbre TTS, voice cloning
 app/safety.py        alert rules
+app/trends.py        14-day timeline, trend numbers, AI trend report + guardrails
+app/demo_history.py  2 weeks of synthetic check-ins for trying the trend view
 app/scheduler.py     daily ring, message retries, missed calls
 app/main.py          web server and API
 static/elder.html    the parent's app
 static/family.html   the family page
-tests/               automated tests (16)
+tests/               automated tests (21)
 ```
