@@ -72,6 +72,14 @@ CREATE TABLE IF NOT EXISTS alerts (
     reason TEXT NOT NULL,
     created_at TEXT
 );
+CREATE TABLE IF NOT EXISTS trend_reports (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    elder_id INTEGER NOT NULL,
+    data_hash TEXT NOT NULL,         -- report is reused until the check-in data changes
+    engine TEXT NOT NULL,            -- gemini:<model> | anthropic:<model> | rules
+    report_json TEXT NOT NULL,
+    created_at TEXT
+);
 CREATE TABLE IF NOT EXISTS updates (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     elder_id INTEGER NOT NULL,

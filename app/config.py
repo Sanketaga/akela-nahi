@@ -1,4 +1,6 @@
-"""Settings loaded from .env. Only Gnani AI is used. Without GNANI_API_KEY the app runs in demo mode."""
+"""Settings loaded from .env. Gnani AI does the voice (Prisma STT, Timbre TTS, voice cloning).
+An optional AI key (Gemini or Anthropic) writes the weekly health-trend report.
+Without GNANI_API_KEY the app runs in demo mode (answers are typed)."""
 import os
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -27,6 +29,12 @@ GNANI_STT_URL = "https://api.vachana.ai/stt/v3"
 GNANI_TTS_URL = "https://api.vachana.ai/api/v1/tts/inference"
 GNANI_VC_URL = "https://api.vachana.ai/api/v1/tts/voice-clone/embeddings"
 
+# Health-trend report (optional). Gemini has a free tier: https://aistudio.google.com/apikey
+GEMINI_API_KEY = _get("GEMINI_API_KEY")
+GEMINI_MODEL = _get("GEMINI_MODEL", "gemini-2.5-flash")
+ANTHROPIC_API_KEY = _get("ANTHROPIC_API_KEY")
+ANTHROPIC_MODEL = _get("ANTHROPIC_MODEL", "claude-sonnet-4-5")
+
 DASHBOARD_PASSWORD = _get("DASHBOARD_PASSWORD")
 TZ = ZoneInfo(_get("TIMEZONE", "Asia/Kolkata"))
 
@@ -39,7 +47,8 @@ def gnani_enabled() -> bool:
 
 
 def status() -> dict:
-    return {"gnani": gnani_enabled(), "stt_model": GNANI_STT_MODEL, "tts_model": GNANI_TTS_MODEL}
+    trends = "gemini" if GEMINI_API_KEY else "anthropic" if ANTHROPIC_API_KEY else "rules"
+    return {"gnani": gnani_enabled(), "stt_model": GNANI_STT_MODEL, "tts_model": GNANI_TTS_MODEL, "trends_ai": trends}
 
 
 LANGUAGES = {

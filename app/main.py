@@ -15,7 +15,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import config, conversation, db, gnani, scheduler
+from . import config, conversation, db, demo_history, gnani, scheduler, trends
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 log = logging.getLogger("akela")
@@ -187,6 +187,70 @@ def overview(elder_id: int):
         "questions": db.all_("SELECT * FROM questions WHERE elder_id=? ORDER BY id DESC LIMIT 10", elder_id),
         "updates": db.all_("SELECT * FROM updates WHERE elder_id=? ORDER BY id DESC LIMIT 30", elder_id),
     }
+
+
+@app.get("/api/elders/{elder_id}/trends", dependencies=AUTH)
+def health_trends(elder_id: int, refresh: bool = False):
+    """14-day timeline, the numbers, and the AI-written trend report for the family."""
+    elder = _elder_or_404(elder_id)
+    return trends.report(elder, refresh=refresh)
+
+
+@app.post("/api/elders/{elder_id}/sample-history", dependencies=AUTH)
+def sample_history(elder_id: int):
+    """Adds two weeks of synthetic check-ins so the trend view can be tried immediately."""
+    _elder_or_404(elder_id)
+    if db.one("SELECT id FROM calls WHERE elder_id=? AND kind='checkin' AND status='completed' LIMIT 1", elder_id):
+        raise HTTPException(400, "This parent already has real check-ins")
+    return {"added": demo_history.seed(elder_id)}
+
+
+@app.get("/report/{elder_id}", dependencies=AUTH)
+def doctor_report(elder_id: int):
+    """A printable one-page summary the family can take to the doctor."""
+    from fastapi.responses import HTMLResponse
+    from html import escape
+    elder = _elder_or_404(elder_id)
+    t = trends.report(elder)
+    rows = t["timeline"]
+    sym = {True: "✓", False: "✗", None: "–"}
+
+    def cell(r, key):
+        if r["status"] == "missed":
+            return "<td class=m>missed</td>"
+        if r["status"] == "none":
+            return "<td></td>"
+        v = r[key]
+        if key == "medicines_taken":
+            return f"<td class={'bad' if v is False else ''}>{sym[v]}</td>"
+        if key == "pain":
+            return f"<td class={'bad' if v else ''}>{escape(', '.join(v)) or '–'}</td>"
+        bad = v in ("poor", "low", "lonely")
+        return f"<td class={'bad' if bad else ''}>{escape(v or '–')}</td>"
+
+    head = "".join(f"<th>{r['date'][5:]}</th>" for r in rows)
+    body = "".join(
+        f"<tr><th>{label}</th>{''.join(cell(r, key) for r in rows)}</tr>"
+        for label, key in (("Medicines", "medicines_taken"), ("Sleep", "sleep"), ("Food", "food"),
+                           ("Pain", "pain"), ("Mood", "mood")))
+    rep = t["report"]
+    trends_html = "".join(f"<li><b>{escape(x['title'])}</b> ({x['direction']}): {escape(x['detail'])}</li>"
+                          for x in rep["trends"]) or "<li>No pattern to report.</li>"
+    html = f"""<!doctype html><html><head><meta charset=utf-8><title>Akela Nahi report: {escape(elder['family_label'])}</title>
+<style>body{{font:14px/1.45 system-ui,sans-serif;max-width:900px;margin:24px auto;padding:0 16px;color:#1f1a15}}
+h1{{font-size:22px;margin:0}}table{{border-collapse:collapse;width:100%;margin:14px 0;font-size:12px}}
+td,th{{border:1px solid #ddd;padding:4px;text-align:center}}th{{background:#f6f2ea}}.bad{{color:#a52a1e;font-weight:600}}
+.m{{color:#999}}.note{{background:#f6f2ea;padding:12px;border-radius:8px}}.muted{{color:#777;font-size:12px}}
+@media print{{button{{display:none}}}}</style></head><body>
+<button onclick="print()" style="float:right">Print</button>
+<h1>{escape(elder['family_label'])}: last {len(rows)} days of check-ins</h1>
+<p class=muted>Medicines on file: {escape(elder.get('medicines') or 'none listed')} · generated {t['generated_at'][:16].replace('T', ' ')} · {escape(t['engine_label'])}</p>
+<div class=note><b>Summary for the doctor.</b> {escape(rep['doctor_note'])}</div>
+<table><tr><th></th>{head}</tr>{body}</table>
+<h3>Trends</h3><ul>{trends_html}</ul>
+<p class=muted>Answers are what the parent said in short daily voice check-ins (Akela Nahi). This is not a medical record or a diagnosis.</p>
+</body></html>"""
+    return HTMLResponse(html)
 
 
 @app.get("/api/calls/{call_id}", dependencies=AUTH)
