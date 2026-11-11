@@ -196,3 +196,29 @@ dialog .dlg-foot { display: flex; gap: 10px; justify-content: flex-end; padding-
   .history .h-sum { grid-column: 1; }
   dialog .dlg-body { padding: 20px; }
 }
+
+/* ---------- health trends ---------- */
+.t-headline { font-family: var(--serif); font-size: 1.25rem; line-height: 1.4; margin-bottom: 16px; }
+.t-grid { display: grid; gap: 4px; align-items: center; }
+.t-day { text-align: center; font-size: .72rem; color: var(--muted); line-height: 1.1; }
+.t-day span { display: block; font-size: .8rem; color: var(--ink-2); }
+.t-label { font-size: .85rem; color: var(--ink-2); }
+.t-cell { height: 22px; border-radius: 6px; background: var(--line); }
+.t-cell.ok { background: var(--green-soft); border: 1px solid color-mix(in srgb, var(--green) 35%, transparent); }
+.t-cell.bad { background: var(--red); opacity: .85; }
+.t-cell.unk { background: var(--line); }
+.t-cell.none { background: transparent; border: 1px dashed var(--line-2); }
+.t-cell.missed { background: repeating-linear-gradient(45deg, var(--amber-soft), var(--amber-soft) 4px, var(--line) 4px, var(--line) 8px); }
+.t-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 10px 0 4px; }
+.t-legend .t-cell { width: 16px; height: 12px; display: inline-block; }
+.t-legend .t-cell + * { margin-right: 6px; }
+.t-list { margin-top: 14px; }
+.t-list li .row { gap: 10px; }
+.t-dir { font-size: .8rem; font-weight: 600; padding: 1px 8px; border-radius: 999px; }
+.t-dir.worse { background: var(--red-soft); color: var(--red); }
+.t-dir.better { background: var(--green-soft); color: var(--green); }
+.t-dir.steady { background: var(--line); color: var(--ink-2); }
+.t-foot { margin-top: 14px; }
+.engine-tag { font-size: .8rem; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.engine-tag.ai::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+@media (max-width: 560px) { .t-grid { grid-template-columns: 70px repeat(14, 1fr) !important; gap: 2px; } .t-cell { height: 18px; border-radius: 4px; } }

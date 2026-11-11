@@ -51,6 +51,85 @@ async function loadOverview() {
   renderHistory(data.calls);
   renderUpdates(e, data.updates);
   renderQuestions(data.questions);
+  loadTrends();
+}
+
+// ---------------------------------------------------------------- health trends
+let lastTrends = "";
+async function loadTrends(refresh) {
+  const id = current;
+  const t = await api(`/api/elders/${id}/trends${refresh ? "?refresh=1" : ""}`);
+  if (id !== current) return;
+  const key = JSON.stringify([id, t.timeline, t.report, t.engine]);
+  if (key === lastTrends && !refresh) return;
+  lastTrends = key;
+  renderTrends(t);
+}
+
+const CELL = {
+  medicines_taken: (v) => v === true ? ["ok", "Taken"] : v === false ? ["bad", "Missed"] : ["unk", "Not clear"],
+  sleep: (v) => v === "good" ? ["ok", "Slept well"] : v === "poor" ? ["bad", "Slept badly"] : ["unk", "Not clear"],
+  food: (v) => v === "good" ? ["ok", "Ate"] : v === "poor" ? ["bad", "Not eaten"] : ["unk", "Not clear"],
+  pain: (v) => v && v.length ? ["bad", v.join(", ")] : ["ok", "No pain"],
+  mood: (v) => v === "happy" ? ["ok", "Good mood"] : v === "low" ? ["bad", "Low"] : v === "lonely" ? ["bad", "Lonely"] : ["unk", "Not clear"],
+};
+const ARROW = { worse: "↑ worse", better: "↓ better", steady: "→ steady" };
+
+function renderTrends(t) {
+  $("doctorBtn").href = `/report/${current}`;
+  const answered = t.stats.total.answered;
+  const kids = [];
+  if (answered < 3) {
+    kids.push(h("p", { class: "empty" }, "Trends appear after a few days of check-ins: missed medicines, pain that keeps coming back, sleep and mood, compared week by week."));
+    if (answered === 0) kids.push(h("div", { class: "row", style: "margin-top:12px" },
+      h("button", { onclick: loadSample }, "Load 2 weeks of sample check-ins"),
+      h("span", { class: "muted small" }, "synthetic data, to try the view")));
+    $("trendsBody").replaceChildren(...kids);
+    return;
+  }
+  const r = t.report;
+  kids.push(h("p", { class: "t-headline" }, r.headline));
+
+  // the 14-day grid
+  const days = t.timeline;
+  const grid = h("div", { class: "t-grid", style: `grid-template-columns: 92px repeat(${days.length}, 1fr)` });
+  grid.append(h("div"));
+  days.forEach((d) => {
+    const dt = new Date(d.date + "T12:00:00");
+    grid.append(h("div", { class: "t-day" }, dt.toLocaleDateString(undefined, { weekday: "narrow" }), h("span", {}, String(dt.getDate()))));
+  });
+  for (const [key, label] of [["medicines_taken", "Medicines"], ["pain", "Pain"], ["sleep", "Sleep"], ["mood", "Mood"], ["food", "Food"]]) {
+    grid.append(h("div", { class: "t-label" }, label));
+    days.forEach((d) => {
+      if (d.status === "missed") { grid.append(h("div", { class: "t-cell missed", title: `${d.date}: didn't answer` })); return; }
+      if (d.status === "none") { grid.append(h("div", { class: "t-cell none", title: `${d.date}: no check-in` })); return; }
+      const [cls, text] = CELL[key](d[key]);
+      grid.append(h("div", { class: "t-cell " + cls, title: `${d.date}: ${text}` }));
+    });
+  }
+  kids.push(grid);
+  kids.push(h("div", { class: "t-legend small muted" },
+    h("span", { class: "t-cell ok" }), "fine", h("span", { class: "t-cell bad" }), "a problem",
+    h("span", { class: "t-cell unk" }), "not clear", h("span", { class: "t-cell missed" }), "missed call"));
+
+  if (r.trends.length) {
+    kids.push(h("ul", { class: "clean t-list" }, ...r.trends.map((x) => h("li", {},
+      h("div", { class: "row" }, h("b", {}, x.title), h("span", { class: "t-dir " + x.direction }, ARROW[x.direction] || x.direction)),
+      h("div", { class: "small" }, x.detail)))));
+  }
+  if (r.ask_on_call.length) kids.push(h("div", { class: "ask-about" }, h("b", {}, "On your next call, ask"), r.ask_on_call.join(" · ")));
+  kids.push(h("div", { class: "row t-foot" },
+    h("span", { class: "engine-tag " + (t.engine === "rules" ? "" : "ai") }, t.engine_label),
+    h("span", { class: "spacer" }),
+    h("button", { class: "ghost", onclick: () => loadTrends(true).then(() => toast("Trend report updated")) }, "Refresh")));
+  $("trendsBody").replaceChildren(...kids);
+}
+
+async function loadSample() {
+  await api(`/api/elders/${current}/sample-history`, { method: "POST" });
+  toast("Added 2 weeks of sample check-ins");
+  lastTrends = "";
+  loadOverview();
 }
 
 function lastCheckin(calls) { return calls.find((c) => c.kind === "checkin" && (c.status === "completed" || c.status === "no_answer")); }
